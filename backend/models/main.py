@@ -1,15 +1,15 @@
-from threading import Thread
-from rnn.api import app_rnn
-from cnn.api import app_cnn
+from fastapi import FastAPI
+from models.cnn import api as cnn_api
+from models.rnn import api as rnn_api
+from models.multimodal import api as multimodal_api
 
-def run_rnn():
-    # Disable reloader
-    app_rnn.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
+app = FastAPI(title="NeuroVision-AI")
 
-def run_cnn():
-    # Disable reloader
-    app_cnn.run(host="0.0.0.0", port=5001, debug=True, use_reloader=False)
+# Register routers
+app.include_router(cnn_api.router, prefix="/cnn", tags=["CNN"])
+app.include_router(rnn_api.router, prefix="/rnn", tags=["RNN"])
+app.include_router(multimodal_api.router, prefix="/multimodal", tags=["Multimodal"])
 
-if __name__ == "__main__":
-    Thread(target=run_rnn).start()
-    Thread(target=run_cnn).start()
+@app.get("/")
+def root():
+    return {"message": "NeuroVision-AI Backend Running"}
