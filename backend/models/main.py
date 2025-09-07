@@ -13,15 +13,15 @@ app = FastAPI(title="Alzheimer’s Prediction Service")
 # ---------------------------
 # CORS
 # ---------------------------
-origins = ["http://localhost:3000"]  # Next.js dev server
+origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[origin.strip() for origin in origins],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # ---------------------------
 # Load models & encoders
 # ---------------------------
