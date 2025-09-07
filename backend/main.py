@@ -25,9 +25,9 @@ app.add_middleware(
 # ---------------------------
 # Load models & encoders
 # ---------------------------
-cnn_model = load_model(os.path.join(os.path.dirname(__file__), "cnn/mri_cnn_model.h5"))
-rnn_model = load_model(os.path.join(os.path.dirname(__file__), "rnn/alz_rnn_model.h5"))
-encoders = joblib.load(os.path.join(os.path.dirname(__file__), "rnn/encoders.pkl"))
+cnn_model = load_model(os.path.join(os.path.dirname(__file__), "models/cnn/mri_cnn_model.h5"))
+rnn_model = load_model(os.path.join(os.path.dirname(__file__), "models/rnn/alz_rnn_model.h5"))
+encoders = joblib.load(os.path.join(os.path.dirname(__file__), "models/rnn/encoders.pkl"))
 
 # Unified 4-class labels
 class_labels = ["Mild", "Moderate", "Normal", "Severe"]
