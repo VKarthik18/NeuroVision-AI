@@ -3,13 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-
-# 1. Load the saved model
-
-model = tf.keras.models.load_model("mri_cnn_model.h5")
+BASE_DIR = os.path.dirname(__file__)
+model = tf.keras.models.load_model(os.path.join(BASE_DIR, "mri_cnn_model.h5"))
 # 2. Load a single test image
 
-img_path = "30.jpeg"  # change this
+img_path = os.path.join(BASE_DIR, "OAS1_0351_MR1_mpr-4_160.jpg")
 
 img_height, img_width = 128, 128  # same size as used in training
 
@@ -22,7 +20,7 @@ predictions = model.predict(img_array)
 predicted_class = np.argmax(predictions[0])
 
 # If you have class names from training, provide them here:
-class_names = ["MildDemented", "ModerateDemented", "NonDemented", "VeryMildDemented"]
+class_names = ["Mild", "Moderate", "Normal", "Severe"]
 
 print("Predicted Class:", class_names[predicted_class])
 print("Confidence Scores:", predictions[0])

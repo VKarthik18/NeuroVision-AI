@@ -15,33 +15,54 @@ options = {
     "Q10_ADLs": ["Always", "Sometimes forget", "Always need reminders"]
 }
 
-# Stage mapping based on "severity score"
-def assign_stage(score):
-    if score <= 12:
+# Stage mapping based on severity percentage
+def assign_stage(score, max_score):
+    pct = score / max_score
+    if pct <= 0.1:
+        return "Normal"
+    elif pct <= 0.4:
         return "Mild"
-    elif score <= 20:
+    elif pct <= 0.7:
         return "Moderate"
     else:
         return "Severe"
 
-# Generate dataset
-def generate_dataset(n=15000, filename="training_dataset.csv"):
-    patients = []
-    for i in range(1, n+1):
-        patient = {"Patient_ID": f"P{i:05d}"}
+# Pick answers for a target stage
+def pick_answers_for_stage(target_stage, max_score):
+    while True:
+        patient_ans = {}
         score = 0
-        
         for q, choices in options.items():
             ans = random.choice(choices)
-            patient[q] = ans
-            score += choices.index(ans)  # severity index
-        
-        patient["Stage"] = assign_stage(score)
-        patients.append(patient)
+            patient_ans[q] = ans
+            score += choices.index(ans)
+        pct = score / max_score
+        if target_stage == "Normal" and pct <= 0.1:
+            return patient_ans
+        elif target_stage == "Mild" and 0.1 < pct <= 0.4:
+            return patient_ans
+        elif target_stage == "Moderate" and 0.4 < pct <= 0.7:
+            return patient_ans
+        elif target_stage == "Severe" and pct > 0.7:
+            return patient_ans
+
+# Generate dataset
+def generate_dataset(n=20000, filename="training_dataset.csv"):
+    patients = []
+    max_score = sum([len(choices)-1 for choices in options.values()])
+    stages = ["Normal", "Mild", "Moderate", "Severe"]
+    n_per_stage = n // 4
+
+    for stage in stages:
+        for _ in range(n_per_stage):
+            patient = {"Patient_ID": f"P{len(patients)+1:05d}"}
+            patient.update(pick_answers_for_stage(stage, max_score))
+            patient["Stage"] = stage
+            patients.append(patient)
 
     df = pd.DataFrame(patients)
     df.to_csv(filename, index=False)
-    print(f"Dataset saved as {filename} with {n} records.")
+    print(f"Dataset saved as {filename} with {len(patients)} records.")
 
 if __name__ == "__main__":
     generate_dataset()

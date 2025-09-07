@@ -7,10 +7,9 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, LSTM, Dense
 from tensorflow.keras.callbacks import EarlyStopping
 
-# ==========================
-# Step 1: Load Dataset
-# ==========================
-df = pd.read_csv("training_dataset.csv")
+import os
+BASE_DIR = os.path.dirname(__file__)
+df = pd.read_csv(os.path.join(BASE_DIR, "training_dataset.csv"))
 
 # ==========================
 # Step 2: Encode Features

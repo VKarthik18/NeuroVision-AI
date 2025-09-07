@@ -3,9 +3,10 @@ import numpy as np
 import pandas as pd
 from tensorflow.keras.models import load_model
 
-# Load model & encoders
-model = load_model("alz_rnn_model.h5")
-encoders = joblib.load("encoders.pkl")
+import os
+BASE_DIR = os.path.dirname(__file__)
+model = load_model(os.path.join(BASE_DIR, "alz_rnn_model.h5"))
+encoders = joblib.load(os.path.join(BASE_DIR, "encoders.pkl"))
 
 def predict_stage(patient_answers):
     """
@@ -40,18 +41,18 @@ def predict_stage(patient_answers):
 
 if __name__ == "__main__":
     # Example patient with VALID categories
-    new_patient = {
-        "Q1_Memory": "Yes, clearly",
-        "Q2_Orientation": "Yes",
-        "Q3_Cognitive": "Need reminders",
-        "Q4_Language": "Sometimes",
-        "Q5_ADLs": "Need some help",
-        "Q6_Behavior": "Rarely",
-        "Q7_Caregiver": "Yes",
-        "Q8_Memory": "Sometimes forget",
-        "Q9_Orientation": "Somewhat confused",
-        "Q10_ADLs": "Always"
-    }
+    new_patient =   {
+    "Q1_Memory": "Yes, clearly",
+    "Q2_Orientation": "Yes",
+    "Q3_Cognitive": "Yes",
+    "Q4_Language": "Rarely",
+    "Q5_ADLs": "Independent",
+    "Q6_Behavior": "Rarely",
+    "Q7_Caregiver": "Yes",
+    "Q8_Memory": "Yes, all",
+    "Q9_Orientation": "Yes",
+    "Q10_ADLs": "Always"
+  }
 
     # Print available categories for reference
     print("\n✅ Available categories for each question:")

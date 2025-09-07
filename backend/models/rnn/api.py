@@ -1,47 +1,86 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import joblib
 import numpy as np
 from tensorflow.keras.models import load_model
-
-# Load RNN model & encoders
-rnn_model = load_model("alz_rnn_model.h5")
-encoders = joblib.load("encoders.pkl")
+import joblib
+import os
 
 app = FastAPI(title="RNN Alzheimer’s API")
 
-# Input schema
-class PatientAnswers(BaseModel):
-    Q1_Memory: str
-    Q2_Orientation: str
-    Q3_Cognitive: str
-    Q4_Language: str
-    Q5_ADLs: str
-    Q6_Behavior: str
-    Q7_Caregiver: str
-    Q8_Memory: str
-    Q9_Orientation: str
-    Q10_ADLs: str
+# ---------------------------
+# Load model & encoders
+# ---------------------------
+BASE_DIR = os.path.dirname(__file__)
+rnn_model = load_model(os.path.join(BASE_DIR, "alz_rnn_model.h5"))
+encoders = joblib.load(os.path.join(BASE_DIR, "encoders.pkl"))
 
+# Use the same Stage encoder from training
+stage_encoder = encoders["Stage"]
+
+# ---------------------------
+# Pydantic model
+# ---------------------------
+class PatientAnswers(BaseModel):
+    Q1_Memory: str = "string"
+    Q2_Orientation: str = "string"
+    Q3_Cognitive: str = "string"
+    Q4_Language: str = "string"
+    Q5_ADLs: str = "string"
+    Q6_Behavior: str = "string"
+    Q7_Caregiver: str = "string"
+    Q8_Memory: str = "string"
+    Q9_Orientation: str = "string"
+    Q10_ADLs: str = "string"
+
+# ---------------------------
+# Prediction endpoint
+# ---------------------------
 @app.post("/predict")
 def predict_stage(data: PatientAnswers):
+    """
+    Accepts answers to 10 questions.
+    Returns predicted stage and probabilities.
+    """
     try:
+        # Convert Pydantic model to dict
+        answers = data.dict()
+
+        # Encode answers using LabelEncoders
         encoded_answers = []
         for col, le in encoders.items():
             if col == "Stage":
                 continue
-            value = getattr(data, col)
+            value = answers[col]
+
+            # ✅ Strict validation (same as predict.py)
             if value not in le.classes_:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Invalid value '{value}' for {col}. Allowed: {list(le.classes_)}"
+                    detail=f"Invalid answer '{value}' for {col}. "
+                           f"Available options are: {list(le.classes_)}"
                 )
-            encoded_answers.append(le.transform([value])[0])
 
+            encoded_value = le.transform([value])[0]
+            encoded_answers.append(encoded_value)
+
+        # Reshape for RNN input
         encoded_answers = np.array(encoded_answers).reshape(1, len(encoded_answers), 1)
-        probabilities = rnn_model.predict(encoded_answers, verbose=0)[0]
-        stage = encoders["Stage"].inverse_transform([np.argmax(probabilities)])[0]
 
-        return {"predicted_stage": stage, "probabilities": probabilities.tolist()}
+        # Model prediction
+        probabilities = rnn_model.predict(encoded_answers, verbose=0)[0]
+
+        # Map predicted index to actual Stage using encoder
+        predicted_index = np.argmax(probabilities)
+        predicted_class = stage_encoder.inverse_transform([predicted_index])[0]
+
+        return {
+            "predicted_stage": predicted_class,
+            "probabilities": [float(f"{p:.6f}") for p in probabilities],
+            "questions": answers,
+            "note": "Replace 'string' with real answers to get accurate prediction"
+        }
+
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

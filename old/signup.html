@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>NEUROVISION-AI | Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .auth-wrapper {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:80vh;
+    }
+    .auth-card {
+      width:100%;
+      max-width:460px;
+      padding:32px;
+      border-radius:20px;
+      background:var(--glass);
+      backdrop-filter:blur(16px) saturate(180%);
+      box-shadow:0 8px 28px rgba(0,0,0,0.4);
+    }
+    .auth-card h2 {
+      font-size:26px;
+      margin-bottom:8px;
+      text-align:center;
+    }
+    .auth-card p {
+      text-align:center;
+      margin-bottom:20px;
+      color:var(--muted);
+    }
+    .auth-card .input {
+      width:100%;
+      padding:14px 16px;
+      margin-bottom:16px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:var(--bg-soft);
+      color:var(--text);
+      font-size:15px;
+    }
+    .auth-card .btn {
+      width:100%;
+      padding:14px;
+      font-size:15px;
+      margin-top:6px;
+    }
+    .auth-footer {
+      text-align:center;
+      margin-top:18px;
+      font-size:14px;
+    }
+    .auth-footer a {
+      color:var(--primary);
+      text-decoration:none;
+      font-weight:600;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-image"></div>
+  <div class="aurora"></div>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="brand"><div class="title">NEUROVISION-AI</div></div>
+      <div class="nav-actions">
+        <nav class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="login.html">Login</a>
+          <a href="signup.html">Signup</a>
+        </nav>
+        <button id="modeBtn" class="mode-btn">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <h2>Create Account</h2>
+        <p>Sign up in less than a minute</p>
+        <input class="input" type="text" placeholder="Full name" />
+        <input class="input" type="email" placeholder="Email address" />
+        <input class="input" type="password" placeholder="Password" />
+        <button class="btn btn-primary" onclick="fakeSignup()">Create account</button>
+        <div class="auth-footer">
+          Already have an account? <a href="login.html">Login</a>
+        </div>
+        <div id="signupMsg" class="muted" style="margin-top:10px; text-align:center"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <h4>About NEUROVISION-AI</h4>
+        <p style="font-size:14px">AI-powered Alzheimer’s detection and screening platform for early intervention and better outcomes.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a href="signup.html">Signup</a>
+        <a href="assessment.html">Assessment</a>
+        <a href="dashboard.html">Dashboard</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p style="font-size:14px">
+          Address: 123 HealthTech Road, Innovation City<br>
+          Email: support@neurovision.ai<br>
+          Phone: +91 98765 43210
+        </p>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <a href="#">Website</a>
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 NEUROVISION-AI. All rights reserved.</div>
+  </footer>
+
+  <script src="theme.js"></script>
+  <script>
+    function fakeSignup(){
+      const msg = document.getElementById("signupMsg");
+      msg.textContent = "Account created (demo). Redirecting to login…";
+      setTimeout(()=> window.location.href="login.html", 1000);
+    }
+  </script>
+</body>
+</html>

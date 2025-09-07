@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>NEUROVISION-AI | Assessment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Circle score styling */
+    .score-circle {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: auto;
+    }
+    .progress-ring__background {
+      fill: transparent;
+      stroke: #ddd;
+      stroke-width: 10;
+    }
+    .progress-ring__circle {
+      fill: transparent;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+      transition: stroke-dashoffset 0.6s ease, stroke 0.3s ease;
+    }
+    .score-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-image"></div>
+  <div class="aurora"></div>
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="brand"><div class="title">NEUROVISION-AI</div></div>
+      <div class="nav-actions">
+        <nav class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="login.html">Login</a>
+          <a href="signup.html">Signup</a>
+        </nav>
+        <button id="modeBtn" class="mode-btn">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="container">
+    <div class="card">
+      <h2 class="title-xl">10 Question Early Screen</h2>
+      <p class="muted">Rate each item from 0 (Never) → 3 (Often).</p>
+      
+      <form id="formQ" onsubmit="return submitAssessment(event)">
+        <div id="qList"></div>
+
+        <!-- Buttons -->
+        <div class="row" style="margin-top:20px; justify-content:center;">
+          <button class="btn btn-primary" type="submit">Submit</button>
+          <button id="retakeBtn" type="button" class="btn btn-ghost" onclick="retakeAssessment()" style="display:none">
+            Retake Assessment
+          </button>
+        </div>
+
+        <!-- Score Message -->
+        <div id="scoreMsg" class="muted" style="margin-top:12px; text-align:center"></div>
+      </form>
+
+      <!-- Circular Score -->
+      <div id="scoreCircleWrapper" style="display:none; margin-top:30px; text-align:center;">
+        <div class="score-circle">
+          <svg class="progress-ring" width="120" height="120">
+            <circle class="progress-ring__background" cx="60" cy="60" r="50" />
+            <circle class="progress-ring__circle" cx="60" cy="60" r="50" />
+          </svg>
+          <div class="score-text" id="scoreValue">0</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <h4>About NEUROVISION-AI</h4>
+        <p style="font-size:14px">
+          AI-powered Alzheimer’s detection and screening platform for early intervention and better outcomes.
+        </p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a href="signup.html">Signup</a>
+        <a href="assessment.html">Assessment</a>
+        <a href="dashboard.html">Dashboard</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p style="font-size:14px">
+          Address: 123 HealthTech Road, Innovation City<br>
+          Email: support@neurovision.ai<br>
+          Phone: +91 98765 43210
+        </p>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <a href="#">Website</a>
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 NEUROVISION-AI. All rights reserved.</div>
+  </footer>
+
+  <script src="theme.js"></script>
+  <script src="assessment.js"></script>
+</body>
+</html>
+

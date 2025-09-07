@@ -13,9 +13,9 @@ from tqdm import tqdm
 import cv2
 import nibabel as nib
 
-#DATASET PATHS
-dataset_path = "Alzheimer_s Dataset"
-class_names = ["MildDemented", "ModerateDemented", "NonDemented", "VeryMildDemented"]
+BASE_DIR = os.path.dirname(__file__)
+dataset_path = os.path.join(BASE_DIR, "Alzheimer_s Dataset")
+class_names = ["Normal", "Mild", "Moderate", "Severe"]
 for root, dirs, files in os.walk(dataset_path):
     print(f"📂 {root} | Subfolders: {dirs} | Files: {len(files)}")
 
