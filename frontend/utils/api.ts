@@ -41,8 +41,7 @@ export interface MultimodalResponse {
 // -----------------------------
 
 // Use environment variable (fallback to localhost in dev)
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL  ;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL  ;
 
 // -----------------------------
 // API Calls
