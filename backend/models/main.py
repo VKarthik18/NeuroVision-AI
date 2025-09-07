@@ -30,7 +30,7 @@ rnn_model = load_model(os.path.join(os.path.dirname(__file__), "rnn/alz_rnn_mode
 encoders = joblib.load(os.path.join(os.path.dirname(__file__), "rnn/encoders.pkl"))
 
 # Unified 4-class labels
-class_labels = ["Normal", "Mild", "Moderate", "Severe"]
+class_labels = ["Mild", "Moderate", "Normal", "Severe"]
 
 # ---------------------------
 # RNN questions template
