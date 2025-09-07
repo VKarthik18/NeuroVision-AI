@@ -1,11 +1,5 @@
 Patient_ID,Q1_Memory,Q2_Orientation,Q3_Cognitive,Q4_Language,Q5_ADLs,Q6_Behavior,Q7_Caregiver,Q8_Memory,Q9_Orientation,Q10_ADLs,Stage
-<<<<<<< HEAD
 P001,"Yes, clearly",Yes,Yes,Rarely,Independent,Rarely,Yes,"Yes, all",Yes,Always,Mild
 P002,"Somewhat,not sure","Approximate but not exact","Need reminders",Sometimes,"Need some help",Sometimes,"Only for short time","Sometimes forget","Somewhat confused","Sometimes forget",Moderate
 P003,"No, cannot recall","No idea","Cannot follow",Frequently,"Fully dependent",Frequently,"Not safe at all","Rarely/never","Not at all","Always need reminders",Severe
 P004,"Yes, clearly",Yes,Yes,Rarely,Independent,Rarely,Yes,"Yes, all",Yes,"Sometimes forget",Normal
-=======
-P001,Yes, clearly,Yes,Yes,Rarely,Independent,Rarely,Yes,Yes, all,Yes,Always,Mild
-P002,Somewhat,not sure,Approximate but not exact,Need reminders,Sometimes,Need some help,Sometimes,Only for short time,Sometimes forget,Somewhat confused,Sometimes forget,Moderate
-P003,No,cannot recall,No idea,Cannot follow,Frequently,Fully dependent,Frequently,Not safe at all,Rarely/never,Not at all,Always need reminders,Severe
->>>>>>> a3793934e2f29a4f13f694960677d1811f6e2ece

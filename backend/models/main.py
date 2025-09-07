@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import JSONResponse
 import numpy as np
@@ -162,20 +161,3 @@ async def predict_multimodal(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-=======
-from fastapi import FastAPI
-from models.cnn import api as cnn_api
-from models.rnn import api as rnn_api
-from models.multimodal import api as multimodal_api
-
-app = FastAPI(title="NeuroVision-AI")
-
-# Register routers
-app.include_router(cnn_api.router, prefix="/cnn", tags=["CNN"])
-app.include_router(rnn_api.router, prefix="/rnn", tags=["RNN"])
-app.include_router(multimodal_api.router, prefix="/multimodal", tags=["Multimodal"])
-
-@app.get("/")
-def root():
-    return {"message": "NeuroVision-AI Backend Running"}
->>>>>>> a3793934e2f29a4f13f694960677d1811f6e2ece
