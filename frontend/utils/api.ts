@@ -37,10 +37,16 @@ export interface MultimodalResponse {
 }
 
 // -----------------------------
-// API Calls
+// API Config
 // -----------------------------
 
-const BASE_URL = "http://127.0.0.1:8000";
+// Use environment variable (fallback to localhost in dev)
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
+// -----------------------------
+// API Calls
+// -----------------------------
 
 // RNN only
 export async function submitRNN(data: RnnAnswers): Promise<RnnResponse> {
