@@ -9,12 +9,27 @@ export default function UploadForm() {
 
   const handleSubmit = async () => {
     if (!file) return alert("Please upload MRI scan.");
-    const data = new FormData();
-    data.append("mri", file);
-    data.append("answers", JSON.stringify(answers));
+    // answers is an array, but submitMultimodal expects RnnAnswers object
+    // Map answers array to RnnAnswers keys
+    const rnnAnswers = {
+      Q1_Memory: answers[0].toString(),
+      Q2_Orientation: answers[1].toString(),
+      Q3_Cognitive: answers[2].toString(),
+      Q4_Language: answers[3].toString(),
+      Q5_ADLs: answers[4].toString(),
+      Q6_Behavior: answers[5].toString(),
+      Q7_Caregiver: answers[6].toString(),
+      Q8_Memory: answers[7].toString(),
+      Q9_Orientation: answers[8].toString(),
+      Q10_ADLs: answers[9].toString(),
+    };
 
-    const res = await submitMultimodal(data);
-    setResult(res.prediction);
+    try {
+      const res = await submitMultimodal(file, rnnAnswers);
+      setResult(res.final_predicted_stage);
+    } catch (err) {
+      setResult("Error: " + (err instanceof Error ? err.message : "Unknown error"));
+    }
   };
 
   return (
