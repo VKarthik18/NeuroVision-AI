@@ -48,6 +48,19 @@ rnn_questions_template = {
     "Q10_ADLs": "string"
 }
 
+@app.get("/")
+async def root():
+    return {
+        "service": "NeuroVision AI Backend Server",
+        "description": "Multimodal Alzheimer’s prediction service powered by CNN + RNN models.",
+        "available_endpoints": {
+            "/cnn": "MRI image classification",
+            "/rnn": "Questionnaire-based cognitive assessment",
+            "/multimodal": "Combined MRI + Questionnaire prediction"
+        },
+        "status": "running"
+    }
+
 # ---------------------------
 # RNN Endpoint
 # ---------------------------
