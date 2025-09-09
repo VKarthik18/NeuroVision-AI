@@ -43,10 +43,12 @@ export default function Behavioral() {
       {/* NAVBAR */}
       <header className="bg-indigo-700 text-white shadow-md">
         <div className="container mx-auto flex justify-between items-center py-4 px-6">
+          <Link href="/" className="brand">
           <div className="flex items-center space-x-3">
             <Image src="/logo.png" alt="NeuroVision AI" width={40} height={40} />
             <span className="text-xl font-bold">NEUROVISION-AI</span>
           </div>
+          </Link>
           <nav className="flex items-center space-x-4">
             <Link href="/" className="hover:text-gray-200">Home</Link>
             <Link href="/predict" className="hover:text-gray-200">Predict</Link>

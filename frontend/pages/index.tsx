@@ -26,6 +26,7 @@ export default function Home() {
       {/* NAVBAR */}
       <header className="nav">
         <div className="nav-inner">
+          <Link href="/" className="brand">
           <div className="brand">
             <Image
               src="/logo.png"
@@ -37,6 +38,7 @@ export default function Home() {
             />
             <div className="title">NEUROVISION-AI</div>
           </div>
+          </Link>
           <div className="nav-actions">
             <nav className="nav-links">
               <Link href="/">Home</Link>
