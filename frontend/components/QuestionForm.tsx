@@ -7,16 +7,16 @@ interface QuestionFormProps {
 
 // User-friendly questions
 const questions = [
-  "How often do you forget recent events or conversations?",  
-  "Do you sometimes get confused about time, date, or place?", 
-  "Do you find it difficult to plan or solve problems?",        
+  "Can you recall recent events or conversations clearly?",  
+  "Can you correctly state the time, date, or place?", 
+  "Can you follow instructions or tasks without reminders?",        
   "Do you struggle to find the right words when speaking?",      
   "Do you have difficulty performing daily tasks like cooking or dressing?", 
   "Have you noticed changes in your mood or personality?",       
-  "Do you feel you need assistance from others to manage daily life?", 
-  "Do you often misplace items or forget names of familiar people?", 
-  "Do you get lost in familiar places?",                         
-  "Do you have trouble managing finances, shopping, or other routines?" 
+  "Can you manage your daily life independently?", 
+  "Can you recall familiar faces, items, or important information?", 
+  "Can you recognize your surroundings correctly?",                         
+  "Can you manage finances, shopping, and other routines safely?" 
 ];
 
 // Dev mode preset answers
