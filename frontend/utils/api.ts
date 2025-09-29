@@ -99,3 +99,39 @@ export async function submitMultimodal(
 
   return (await response.json()) as MultimodalResponse;
 }
+// In utils/api.ts
+
+// ... (keep all your existing interfaces) ...
+
+// ADD THIS NEW INTERFACE for the report response
+export interface ReportResponse {
+  report: string;
+}
+
+// We'll also define the type for the array of answers our new endpoint needs
+export interface UserAnswer {
+  qId: string;
+  answer: string;
+}
+
+// ... (keep your existing API Calls: submitRNN, submitCNN, submitMultimodal) ...
+
+
+// ADD THIS NEW API CALL FUNCTION for the report
+export async function generateReport(
+  data: UserAnswer[]
+): Promise<ReportResponse> {
+  const response = await fetch(`${BASE_URL}/generate-report`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    // The Python backend expects the data inside an "answers" key
+    body: JSON.stringify({ answers: data }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+  }
+
+  return (await response.json()) as ReportResponse;
+}

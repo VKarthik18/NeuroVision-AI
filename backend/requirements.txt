@@ -6,6 +6,9 @@ joblib
 numpy
 scikit-learn
 python-multipart
-
+# backend/requirements.txt
+Flask
+Flask-Cors
+# ... your other packages ...
 
 

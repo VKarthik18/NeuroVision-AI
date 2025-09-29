@@ -2,15 +2,44 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import QuestionForm from "../../components/QuestionForm";
-import { RnnAnswers, submitMultimodal } from "../../utils/api";
+
+// ADDED: Import the new functions and types
+import {
+  RnnAnswers,
+  ReportResponse,
+  UserAnswer,
+  submitMultimodal,
+  generateReport,
+} from "../../utils/api";
+
+// ADDED: Helper function to transform your form data for the report API
+const transformRnnToUserAnswers = (answers: RnnAnswers): UserAnswer[] => {
+  const keyMap: { [key in keyof RnnAnswers]: string } = {
+    Q1_Memory: "q1", Q2_Orientation: "q2", Q3_Cognitive: "q3", Q4_Language: "q4",
+    Q5_ADLs: "q5", Q6_Behavior: "q6", Q7_Caregiver: "q7", Q8_Memory: "q8",
+    Q9_Orientation: "q9", Q10_ADLs: "q10",
+  };
+  return Object.entries(answers).map(([key, value]) => ({
+    qId: keyMap[key as keyof RnnAnswers],
+    answer: value,
+  }));
+};
 
 export default function Multimodal() {
+  const router = useRouter(); // ADDED: To allow starting a new assessment
   const [darkMode, setDarkMode] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedAnswers, setSelectedAnswers] = useState<RnnAnswers | null>(null);
-  const [result, setResult] = useState<string | null>(null);
+  
+  // UPDATED: Renamed 'result' to 'prediction' for clarity
+  const [prediction, setPrediction] = useState<string | null>(null);
+  // ADDED: New state for the detailed report
+  const [report, setReport] = useState<ReportResponse | null>(null);
+  
   const [loading, setLoading] = useState(false);
+  // ADDED: New state for better error handling
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     document.body.className = darkMode ? "dark" : "";
@@ -22,22 +51,34 @@ export default function Multimodal() {
     }
   };
 
+  // UPDATED: The handleSubmit function to call both APIs concurrently
   const handleSubmit = async (answers: RnnAnswers) => {
     if (!selectedFile) {
-      alert("Please upload an MRI scan file before submitting.");
+      setError("Please upload an MRI scan file before submitting.");
       return;
     }
-    setSelectedAnswers(answers);
     setLoading(true);
-    setResult(null);
+    setError(null);
+    setPrediction(null);
+    setReport(null);
 
     try {
-      const res = await submitMultimodal(selectedFile, answers);
-      console.log("Server response:", res);
-      setResult(res.final_predicted_stage);
+      // Prepare the data for the report endpoint
+      const reportAnswers = transformRnnToUserAnswers(answers);
+
+      // Use Promise.all to run both API calls at the same time
+      const [predictionData, reportData] = await Promise.all([
+        submitMultimodal(selectedFile, answers),
+        generateReport(reportAnswers),
+      ]);
+      
+      // Set state with both results
+      setPrediction(predictionData.final_predicted_stage);
+      setReport(reportData);
+
     } catch (err) {
       console.error(err);
-      setResult("Error contacting server");
+      setError(err instanceof Error ? err.message : "An unknown error occurred.");
     } finally {
       setLoading(false);
     }
@@ -47,30 +88,24 @@ export default function Multimodal() {
     <>
       <Head>
         <title>NEUROVISION-AI | Multimodal Assessment</title>
-        <meta
-          name="description"
-          content="Multimodal assessment for Alzheimer’s prediction using MRI + behavioral data."
-        />
+        <meta name="description" content="Multimodal assessment for Alzheimer’s prediction." />
         <link rel="icon" href="/logo.png" />
       </Head>
 
       {/* HEADER */}
       <header className="bg-indigo-700 text-white shadow-md">
+        {/* Your header JSX... */}
         <div className="container mx-auto flex justify-between items-center py-4 px-6">
           <Link href="/" className="brand">
-          <div className="flex items-center space-x-3">
-            <Image src="/logo.png" alt="NeuroVision AI" width={40} height={40} />
-            <span className="text-xl font-bold">NEUROVISION-AI</span>
-          </div>
+            <div className="flex items-center space-x-3">
+              <Image src="/logo.png" alt="NeuroVision AI" width={40} height={40} />
+              <span className="text-xl font-bold">NEUROVISION-AI</span>
+            </div>
           </Link>
           <nav className="flex items-center space-x-4">
             <Link href="/" className="hover:text-gray-200">Home</Link>
             <Link href="/predict" className="hover:text-gray-200">Predict</Link>
-            <button
-              aria-label="Toggle Dark Mode"
-              className="ml-4 text-lg"
-              onClick={() => setDarkMode(!darkMode)}
-            >
+            <button aria-label="Toggle Dark Mode" className="ml-4 text-lg" onClick={() => setDarkMode(!darkMode)}>
               {darkMode ? "☀️" : "🌙"}
             </button>
           </nav>
@@ -78,55 +113,64 @@ export default function Multimodal() {
       </header>
 
       {/* MAIN CONTENT */}
-      <div className="flex flex-col items-center justify-center min-h-[80vh] bg-gradient-to-r from-indigo-100 via-white to-indigo-50 font-sans px-4">
-        <div className="bg-white shadow-xl rounded-2xl p-10 max-w-lg w-full">
-          <h1 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center">
-            Multimodal Assessment
-          </h1>
+      <div className="flex flex-col items-center justify-center min-h-[80vh] bg-gradient-to-r from-indigo-100 via-white to-indigo-50 font-sans px-4 py-8">
+        <div className="bg-white shadow-xl rounded-2xl p-10 max-w-2xl w-full">
+          
+          {/* UPDATED: This logic now decides whether to show the form or the results */}
+          {!loading && !prediction && !report ? (
+            <>
+              <h1 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center">
+              Multimodal Assessment
+              </h1>
+              <p className="text-gray-600 mb-8 text-center">
+              Upload your MRI scan and answer the questions below.
+              </p>
+              
+              <div className="mb-6">
+              <label className="block font-medium mb-2 text-black">Upload MRI Scan (required)</label>
+              <label className="flex items-center justify-center w-full p-3 bg-indigo-100 border-2 border-dashed border-indigo-400 rounded cursor-pointer hover:bg-indigo-200 transition">
+                <span className="text-2xl mr-2">📤</span>
+                <span className="text-black font-medium">Click to upload MRI</span>
+                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              </label>
+              {selectedFile && <div className="mt-2 text-gray-700 font-medium">📂 {selectedFile.name}</div>}
+              </div>
 
-          <p className="text-gray-600 mb-8 text-center">
-            Upload your MRI scan and answer the questions below to predict Alzheimer’s stage.
-          </p>
+              <QuestionForm onSubmit={handleSubmit} />
+            </>
+          ) : (
+            // ADDED: This is the new results display area
+            <div className="results-container">
+              <h1 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center">
+                Analysis Complete
+              </h1>
+              
+              {prediction && (
+                <div className="mt-6 p-4 bg-green-100 rounded text-green-800 font-semibold text-center">
+                  Prediction: {prediction}
+                </div>
+              )}
 
-          {/* MRI Upload */}
-<div className="mb-6">
-  <label className="block font-medium mb-2 text-black">
-    Upload MRI Scan (required)
-  </label>
+              {report && (
+                 <div className="report-result mt-4 p-6 border rounded-lg shadow-inner bg-gray-50 text-left" style={{ whiteSpace: 'pre-wrap' }}>
+                    <h2 className="text-2xl font-bold mb-4 text-gray-800">Detailed Analysis Report</h2>
+                    <p className="text-gray-700">{report.report}</p>
+                 </div>
+              )}
 
-  <label className="flex items-center justify-center w-full p-3 bg-indigo-100 border-2 border-dashed border-indigo-400 rounded cursor-pointer hover:bg-indigo-200 transition">
-    <span className="text-2xl mr-2">📤</span>
-    <span className="text-black font-medium">Click to upload MRI</span>
-    <input
-      type="file"
-      accept="image/*"
-      onChange={handleFileChange}
-      className="hidden"
-    />
-  </label>
-
-  {selectedFile && (
-    <div className="mt-2 text-gray-700 font-medium">📂 {selectedFile.name}</div>
-  )}
-</div>
-
-
-          {/* Question Form */}
-          <QuestionForm onSubmit={handleSubmit} />
-
-          {/* Loading */}
-          {loading && (
-            <div className="mt-6 text-indigo-700 font-semibold text-center">
-              ⏳ Predicting...
+              <button
+                onClick={() => router.reload()}
+                className="w-full mt-8 bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700"
+              >
+                Start New Assessment
+              </button>
             </div>
           )}
 
-          {/* Result */}
-          {result && (
-            <div className="mt-6 p-4 bg-green-100 rounded text-green-800 font-semibold text-center">
-              Prediction: {result}
-            </div>
-          )}
+          {/* Loading and Error states are handled outside the main conditional for better UX */}
+          {loading && <div className="mt-6 text-indigo-700 font-semibold text-center">⏳ Predicting...</div>}
+          {error && <div className="mt-6 p-4 bg-red-100 rounded text-red-800 font-semibold text-center">Error: {error}</div>}
+          
         </div>
       </div>
     </>

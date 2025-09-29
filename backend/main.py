@@ -1,3 +1,6 @@
+# Add this with your other imports at the top
+# We only need QUESTION_DESCRIPTIONS and ANSWER_MAP for the new logic
+from report_logic import QUESTION_DESCRIPTIONS, ANSWER_MAP # Add the new import
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import JSONResponse
 import numpy as np
@@ -172,5 +175,44 @@ async def predict_multimodal(
             "questions": answers
         }
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+# ------------------------------------
+# AI-Generated Qualitative Report Endpoint
+# ------------------------------------
+# In backend/main.py, update your import at the top
+from report_logic import QUESTION_DESCRIPTIONS, ANSWER_MAP # Use the new import
+
+# ... (rest of your main.py file) ...
+
+# Replace your existing endpoint with this updated version
+@app.post("/generate-report")
+async def generate_qualitative_report(user_data: dict):
+    try:
+        user_answers = user_data.get('answers', [])
+        if not user_answers:
+            raise HTTPException(status_code=400, detail="No answers provided.")
+
+        concerning_questions = []
+        # Loop through answers and flag questions with Mild or Significant difficulty
+        for item in user_answers:
+            q_id = item.get('qId'); answer = item.get('answer')
+            difficulty = ANSWER_MAP.get(q_id, {}).get(answer, "No Difficulty")
+            if difficulty in ["Mild Difficulty", "Significant Difficulty"]:
+                concerning_questions.append(q_id)
+        
+        # Build the report string
+        if not concerning_questions:
+            report_text = "Based on your responses, no specific areas of difficulty were identified."
+        else:
+            report_text = "Based on your responses, the following areas may warrant further attention:\n\n"
+            for q_id in sorted(list(set(concerning_questions))): # Use sorted(list(set(...))) to get unique, ordered questions
+                if q_id in QUESTION_DESCRIPTIONS:
+                    report_text += f"{QUESTION_DESCRIPTIONS[q_id]}\n\n"
+        
+        # UPDATED DISCLAIMER TEXT
+        report_text += "### IMPORTANT DISCLAIMER\n**This is not a medical diagnosis and should not be considered a substitute for a professional medical evaluation. The purpose of this tool is for informational screening only. Please consult with a qualified healthcare provider for any health concerns or before making any medical decisions.**"
+
+        return {"report": report_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
