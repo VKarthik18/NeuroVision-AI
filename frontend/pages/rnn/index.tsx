@@ -93,12 +93,13 @@ export default function Behavioral() {
           {!loading && !prediction && !report ? (
             <>
               <h1 className="text-3xl font-extrabold text-indigo-700 mb-6 text-center">
-                Behavioral Assessment
+              Behavioral Assessment
               </h1>
               <p className="text-gray-600 mb-8 text-center">
-                Answer the following questions for a prediction and detailed analysis.
+              Answer the following questions for a prediction and detailed analysis.
               </p>
-              <QuestionForm onSubmit={handleSubmit} isLoading={loading}/>
+              {/* Remove isLoading prop if QuestionForm does not accept it */}
+              <QuestionForm onSubmit={handleSubmit} />
             </>
           ) : (
             // ADDED: This is the new results display area
