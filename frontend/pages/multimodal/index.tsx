@@ -136,7 +136,7 @@ export default function Multimodal() {
               {selectedFile && <div className="mt-2 text-gray-700 font-medium">📂 {selectedFile.name}</div>}
               </div>
 
-              <QuestionForm onSubmit={handleSubmit} />
+              <QuestionForm onSubmit={handleSubmit} isLoading={loading} />
             </>
           ) : (
             // ADDED: This is the new results display area

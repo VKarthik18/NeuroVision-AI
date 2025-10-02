@@ -98,8 +98,8 @@ export default function Behavioral() {
               <p className="text-gray-600 mb-8 text-center">
               Answer the following questions for a prediction and detailed analysis.
               </p>
-              {/* Remove isLoading prop if QuestionForm does not accept it */}
-              <QuestionForm onSubmit={handleSubmit} />
+              {/* Pass loading state as isLoading prop if required by QuestionForm */}
+              <QuestionForm onSubmit={handleSubmit} isLoading={loading} />
             </>
           ) : (
             // ADDED: This is the new results display area
