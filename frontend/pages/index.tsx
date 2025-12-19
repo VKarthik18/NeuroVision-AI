@@ -2,8 +2,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { Brain, Shield, Zap, Users, ChevronRight, BarChart, Cpu, Activity } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Brain, Shield, Zap, Users, ChevronRight, BarChart, Cpu, Activity, Menu, X } from "lucide-react";
 
 // Neural Background Component
 const NeuralBackground = () => {
@@ -118,6 +118,8 @@ const NeuralBackground = () => {
 };
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <>
       <Head>
@@ -175,18 +177,94 @@ export default function Home() {
               </Link>
             </nav>
 
-            <div className="flex items-center space-x-4">
-              <Link 
-                href="/predict" 
-                className="btn btn-primary flex items-center space-x-2"
-              >
-                <Brain size={20} />
-                <span>Start Detection</span>
-              </Link>
-            </div>
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 text-slate-300 hover:text-white transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
       </header>
+
+        {/* Mobile Navigation Menu */}
+        <div
+          className={`md:hidden fixed inset-0 z-40 transition-opacity duration-300 ${
+            mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          {/* Menu Panel */}
+          <div
+            className={`absolute top-0 right-0 h-full w-64 bg-slate-950/95 border-l border-slate-800 shadow-2xl transition-transform duration-300 ${
+              mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
+            <div className="flex flex-col h-full">
+              {/* Close button */}
+              <div className="flex justify-end p-4">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 text-slate-300 hover:text-white transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <nav className="flex flex-col space-y-1 px-4">
+                <Link
+                  href="/"
+                  className="text-slate-300 hover:text-white hover:bg-slate-800/50 font-medium transition-all px-4 py-3 rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/predict"
+                  className="text-slate-300 hover:text-white hover:bg-slate-800/50 font-medium transition-all px-4 py-3 rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Predict
+                </Link>
+                <Link
+                  href="/research"
+                  className="text-slate-300 hover:text-white hover:bg-slate-800/50 font-medium transition-all px-4 py-3 rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Research
+                </Link>
+                <Link
+                  href="/about"
+                  className="text-slate-300 hover:text-white hover:bg-slate-800/50 font-medium transition-all px-4 py-3 rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  About
+                </Link>
+              </nav>
+
+              {/* CTA Button in Mobile Menu */}
+              <div className="mt-auto p-4">
+                <Link
+                  href="/predict"
+                  className="btn btn-primary flex items-center justify-center space-x-2 w-full"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Brain size={20} />
+                  <span>Start Detection</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
 
       {/* MAIN CONTENT */}
       <main className="pt-32">
