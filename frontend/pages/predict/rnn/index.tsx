@@ -433,10 +433,10 @@ export default function Behavioral() {
       return prediction.confidence || 0;
     }
     
-    // For RnnResponse type, try to get from probabilities
-    if ('probabilities' in prediction && prediction.probabilities && prediction.predicted_stage) {
-      const prob = prediction.probabilities[prediction.predicted_stage];
-      return prob ? prob * 100 : 0;
+    // For RnnResponse type, try to get from probabilities array
+    if ('probabilities' in prediction && Array.isArray(prediction.probabilities)) {
+      const maxProb = Math.max(...prediction.probabilities);
+      return maxProb * 100;
     }
     
     return 0;

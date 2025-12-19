@@ -474,20 +474,15 @@ export default function Multimodal() {
       setTimeout(() => {
         const riskScore = calculateRiskScore(answers);
         const predictionStage = riskScore > 70 ? "High Risk" : riskScore > 40 ? "Moderate Risk" : "Low Risk";
+        const confidence = riskScore / 100;
         
         setPrediction({
           final_predicted_stage: predictionStage,
-          mri_analysis: {
-            detected_anomalies: ["Hippocampal atrophy detected", "Mild cerebral atrophy"],
-            confidence_score: 0.85,
-            severity: riskScore > 70 ? "High" : riskScore > 40 ? "Moderate" : "Low"
-          },
-          rnn_analysis: {
-            predicted_stage: predictionStage,
-            confidence: riskScore / 100,
-            probabilities: { [predictionStage]: riskScore / 100 }
-          }
-        } as MultimodalResponse);
+          final_probabilities: [confidence, 1 - confidence],
+          cnn_probabilities: [confidence * 0.85, 1 - (confidence * 0.85)],
+          rnn_probabilities: [confidence, 1 - confidence],
+          questions: answers
+        });
         
         setReport({
           report: `Based on multimodal analysis of your MRI scan and behavioral assessment, our AI has detected patterns indicative of ${predictionStage.toLowerCase()} for Alzheimer's disease.\n\nKey findings:\n• MRI Analysis: Hippocampal atrophy detected with 85% confidence\n• Cognitive Patterns: Memory recall shows ${riskScore > 60 ? 'significant' : 'moderate'} concerns\n• Behavioral Analysis: Daily activity management requires ${riskScore > 60 ? 'frequent' : 'occasional'} assistance\n• Combined Confidence: ${(riskScore * 0.85).toFixed(1)}%\n\nRecommendations:\n1. Consult with a neurologist for comprehensive evaluation\n2. Consider follow-up neuroimaging in 6-12 months\n3. Engage in regular cognitive exercises\n4. Maintain social and physical activity\n5. Consider lifestyle modifications\n\nThis assessment is for informational purposes only. Please consult with healthcare professionals for medical advice.`
@@ -544,10 +539,8 @@ export default function Multimodal() {
   const getConfidenceScore = () => {
     if (!prediction) return 0;
     
-    if (prediction.final_predicted_stage && prediction.rnn_analysis?.confidence) {
-      const rnnConfidence = prediction.rnn_analysis.confidence * 100;
-      const mriConfidence = prediction.mri_analysis?.confidence_score ? prediction.mri_analysis.confidence_score * 100 : 85;
-      return Math.round((rnnConfidence + mriConfidence) / 2);
+    if (prediction.final_probabilities && prediction.final_probabilities.length > 0) {
+      return Math.round(Math.max(...prediction.final_probabilities) * 100);
     }
     
     return 85; // Default confidence for fallback

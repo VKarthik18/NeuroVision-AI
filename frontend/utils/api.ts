@@ -34,6 +34,16 @@ export interface MultimodalResponse {
   cnn_probabilities: number[];
   rnn_probabilities: number[];
   questions: RnnAnswers;
+  mri_analysis?: {
+    detected_anomalies?: string[];
+    confidence_score?: number;
+    severity?: string;
+  };
+  rnn_analysis?: {
+    predicted_stage?: string;
+    confidence?: number;
+    probabilities?: { [key: string]: number };
+  };
 }
 
 // -----------------------------
