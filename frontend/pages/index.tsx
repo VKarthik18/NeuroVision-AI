@@ -177,7 +177,18 @@ export default function Home() {
               </Link>
             </nav>
 
-            {/* Mobile Menu Button */}
+            {/* Desktop Start Detection Button - Hidden on Mobile */}
+            <div className="hidden md:block">
+              <Link 
+                href="/predict" 
+                className="flex btn btn-primary items-center space-x-2"
+              >
+                <Brain size={20} />
+                <span>Start Detection</span>
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button - Only on Mobile */}
             <button
               className="md:hidden p-2 text-slate-300 hover:text-white transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -250,18 +261,6 @@ export default function Home() {
                   About
                 </Link>
               </nav>
-
-              {/* CTA Button in Mobile Menu */}
-              <div className="mt-auto p-4">
-                <Link
-                  href="/predict"
-                  className="btn btn-primary flex items-center justify-center space-x-2 w-full"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Brain size={20} />
-                  <span>Start Detection</span>
-                </Link>
-              </div>
             </div>
           </div>
         </div>
