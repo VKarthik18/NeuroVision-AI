@@ -454,25 +454,45 @@ export default function Home() {
                 </div>
               </div>
               <div className="relative">
-                <div className="relative p-8">
+                <div className="relative p-4">
                   <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-2xl" />
-                  {/* Neural network visualization */}
-                  <div className="relative h-80 w-full">
-                    {[...Array(5)].map((_, layer) => (
-                      <div key={layer} className="absolute top-1/2 left-0 transform -translate-y-1/2 w-full flex justify-around">
-                        {[...Array(8 - layer)].map((_, node) => (
-                          <div
-                            key={node}
-                            className="w-4 h-4 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 animate-pulse"
-                            style={{
-                              animationDelay: `${(layer + node) * 0.1}s`,
-                              opacity: 0.7,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ))}
-                  </div>
+                  {/* Video visualization */}
+                <div
+  className="relative h-80 w-full rounded-2xl overflow-hidden group
+             border border-slate-700/50
+             transition-all duration-300 ease-out
+             shadow-[0_8px_30px_rgba(0,0,0,0.35)]
+             hover:-translate-y-[4px]
+             hover:shadow-[0_14px_50px_rgba(56,189,248,0.25)]"
+  onContextMenu={(e) => e.preventDefault()}
+>
+  <video
+    autoPlay
+    muted
+    loop
+    playsInline
+    webkit-playsinline
+    preload="auto"
+    disablePictureInPicture
+    controlsList="nodownload nofullscreen noremoteplayback"
+    className="w-full h-full object-cover pointer-events-none"
+  >
+    <source src="/videos/illusion.mp4" type="video/mp4" />
+  </video>
+
+  {/* Medical-style hover overlay */}
+  <div
+    className="absolute inset-0 bg-cyan-400/5 opacity-0
+               group-hover:opacity-100 transition-opacity duration-300"
+  />
+
+  {/* Subtle border highlight */}
+  <div
+    className="absolute inset-0 rounded-2xl ring-1 ring-cyan-400/0
+               group-hover:ring-cyan-400/30 transition-all duration-300"
+  />
+</div>
+ 
                 </div>
               </div>
             </div>
@@ -563,7 +583,6 @@ export default function Home() {
 
           <div className="pt-8 border-t border-slate-800 text-center text-slate-500 text-sm">
             <p>© {new Date().getFullYear()} NEUROVISION-AI. All rights reserved.</p>
-            <p>Built with ❤️ by <a href="https://www.linkedin.com/in/karthik-vidyala-b406b3294/" className="underline hover:text-white transition-colors">Karthik Vidyala</a></p>
           </div>
         </div>
       </footer>
